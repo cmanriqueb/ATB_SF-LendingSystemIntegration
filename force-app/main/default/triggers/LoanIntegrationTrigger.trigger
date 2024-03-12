@@ -27,7 +27,13 @@ trigger LoanIntegrationTrigger on Loan__c (after insert, after update, after del
         }
     }
 
-    // Enqueue jobs for each operation
+    // Enqueue future executions for each operation
+    // NOTE: Currently, the LendingSystemIntegration class utilizes future methods. Be aware that within a single Apex  
+    //       transaction, there is a limit of up to 50 future calls. 
+    //       Alternatively, for high-volume scenarios or to enhance scalability, transitioning 
+    //       to the Queueable Apex interface may be beneficial, as it allows for the chaining of asynchronous 
+    //       operations and more sophisticated state management.
+
     if (!loanIdsForCreation.isEmpty()) {
         LendingSystemIntegration.createLoan(loanIdsForCreation);
     }

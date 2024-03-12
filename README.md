@@ -31,6 +31,20 @@ Before you begin, ensure you have the following:
    - Navigate to Setup > Security > Named Credentials.
    - Create a new Named Credential with the API details of the external lending system.
   
+4. Add validation rules to the Loan__c object
+   ### Rule 1: Positive Amount
+   - **Rule Name**: Amount_Must_Be_Positive
+   - **Description**: Ensures that the loan amount is a positive number greater than zero.
+   - **Formula**: `Amount__c <= 0`
+   - **Error Message**: "The amount must be greater than zero."
+   - **Error Location**: "The Loan Amount must be greater than zero."
+    ### Rule 2: LoanName_Digits_Only
+   - **Rule Name**: LoanName_Digits_Only
+   - **Description**: The Loan Name must only contain numbers and no spaces or special characters. This ensures that the Loan Name field is used consistently and follows a standardized format.
+   - **Error Condition Formula**: `NOT(REGEX(Name, "^\\d+$"))`
+   - **Error Message**: "The Loan Name must only contain numbers and no spaces or special characters."
+
+  
 ## Usage
 
 Follow these steps to utilize the integration:

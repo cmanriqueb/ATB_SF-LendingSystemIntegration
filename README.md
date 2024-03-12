@@ -51,11 +51,58 @@ Follow these steps to utilize the integration:
 
 - Go to the Loans tab in Salesforce and create a new Loan__c record.
 - Fill out the necessary fields and save the record to initiate synchronization with the external lending system.
-- Check back on the saved Loan__c record to see updated information reflecting the external system's response.
+- Check the saved Loan__c record to see updated information reflecting the external system's response.
 
 ## Troubleshooting
   - Check the Named Credentials settings if there are issues with API connectivity (It should be named LendingSystem).
   - Activate and review Apex debug logs for errors related to synchronization processes.
+
+## Backend Transactions Logging
+
+### Overview
+
+The `BackendTransaction__c` custom object logs all interactions between Salesforce and the external backend system. This logging mechanism helps in monitoring the success or failure of operations such as inserts (`I`), updates (`U`), and deletes (`D`) performed on external systems.
+
+### Fields Description
+
+- **Operation__c**: A picklist field that indicates the type of operation. Possible values include:
+  - `I` - Insert
+  - `U` - Update
+  - `D` - Delete
+- **Status__c**: A picklist field representing the outcome of the operation. It can be either:
+  - `Succeeded`
+  - `Failed`
+- **StatusCode__c**: A text field that stores the HTTP status code returned by the external system.
+- **Message__c**: A text area that captures any messages or descriptions returned by the external system or generated during the operation.
+- **Loan__c**: A lookup field to the `Loan__c` record. This association helps in tracking which loan record was involved in the transaction.
+- **Loan_Name__c**: A text field used to store the name of the loan. This ensures that the reference to the loan's name persists even if the `Loan__c` record is deleted.
+
+### Usage
+
+Each time Salesforce performs an operation that interacts with the external system (such as creating, updating, or deleting loan records), a `BackendTransaction__c` record is created to log the details of this interaction. This includes the operation type, the status and code of the response, and any relevant messages. This setup assists administrators and developers in troubleshooting and provides an audit trail of all external interactions.
+
+### Example of Logging
+
+Upon the successful creation of a loan record in the external system, a `BackendTransaction__c` record might look like this:
+
+- **Operation__c**: `I`
+- **Status__c**: `Succeeded`
+- **StatusCode__c**: `200`
+- **Message__c**: `Loan record created successfully in the external system.`
+- **Loan__c**: [Link to the associated Loan record]
+- **Loan_Name__c**: `Sample Loan Name`
+
+Conversely, if an update operation fails, the corresponding `BackendTransaction__c` record could be:
+
+- **Operation__c**: `U`
+- **Status__c**: `Failed`
+- **StatusCode__c**: `404`
+- **Message__c**: `Loan record not found in the external system.`
+- **Loan__c**: [Link to the associated Loan record]
+- **Loan_Name__c**: `Sample Loan Name`
+
+By maintaining these logs, Salesforce users can gain insights into the data flow between Salesforce and the external backend system and quickly address any issues.
+
 
 ## Testing
 

@@ -63,9 +63,10 @@ The backend is implemented in PHP and interacts with a MySQL database to store o
 
 The backend code is organized in the `backend` folder within the repository, containing the following files:
 
-- `create_loan.php`: Handles the insertion of new loan records.
-- `update_loan.php`: Manages updates to existing loan records.
-- `delete_loan.php`: Takes care of deleting loan records.
+- `loan.php`:
+   - "operation": "I" --> Inserts a new loan record.
+   - "operation": "U" --> Updates an existing loan record.
+   - "operation": "D" --> Deletes an existing loan record.
 - `operations.sql`: Contains the SQL script to create the `operations` table in your MySQL database.
 
 ### Database Setup

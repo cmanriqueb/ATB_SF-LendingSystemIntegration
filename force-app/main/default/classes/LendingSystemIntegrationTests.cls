@@ -1,12 +1,18 @@
 @isTest
 private class LendingSystemIntegrationTests {
 
-    @isTest static void testCreateLoan() {
+    @isTest static void testCreateLoanSuccess() {
+        // Ensure we're starting with default settings
+        LendingSystemMockHttpResponseGenerator.reset();
+        // Set up for a successful response
+        LendingSystemMockHttpResponseGenerator.shouldSucceed = true;
+        LendingSystemMockHttpResponseGenerator.operation = 'I'; // 'I' for Insert/Create
+        
         // Set up test data
         Loan__c testLoan = new Loan__c(Name='123456789', Amount__c=1000);
         insert testLoan;
 
-        // Set up mock callout response for successful creation
+        // Set up mock callout response
         Test.setMock(HttpCalloutMock.class, new LendingSystemMockHttpResponseGenerator());
 
         // Start test context
@@ -21,21 +27,27 @@ private class LendingSystemIntegrationTests {
         
         // Verify the results
         testLoan = [SELECT LoanId__c FROM Loan__c WHERE Id = :testLoan.Id];
-        System.assertNotEquals(null, testLoan.LoanId__c, 'Loan should have an external ID after creation');
+        System.assertNotEquals(null, testLoan.LoanId__c, 'Loan should have an external ID after successful creation');
     }
 
-    @isTest static void testCreateLoanError() {
-        // Set up test data for a scenario that should fail
-        Loan__c testLoan = new Loan__c(Name='', Amount__c=1000); // Invalid name
+    @isTest static void testCreateLoanFailure() {
+        // Reset to default settings and configure for a failure scenario
+        LendingSystemMockHttpResponseGenerator.reset();
+        LendingSystemMockHttpResponseGenerator.shouldSucceed = false; // Simulate failure
+        LendingSystemMockHttpResponseGenerator.operation = 'I'; // 'I' for Insert/Create
+        LendingSystemMockHttpResponseGenerator.statusCodeOverride = 400; // Error status code
+        
+        // Set up test data
+        Loan__c testLoan = new Loan__c(Name='987654321', Amount__c=500); // Assume the loan does not have an external ID
         insert testLoan;
 
-        // Set up mock callout response for failed creation due to invalid data
+        // Set up mock callout response
         Test.setMock(HttpCalloutMock.class, new LendingSystemMockHttpResponseGenerator());
 
         // Start test context
         Test.startTest();
         
-        // Call the method to test
+        // Attempt to create the loan, which should fail in this case
         Set<Id> loanIds = new Set<Id>{testLoan.Id};
         LendingSystemIntegration.createLoan(loanIds);
         
@@ -47,91 +59,132 @@ private class LendingSystemIntegrationTests {
         System.assertEquals(null, testLoan.LoanId__c, 'Loan should not have an external ID after failed creation');
     }
 
-    @isTest static void testUpdateLoan() {
-        // Prepare the initial test data
-        Loan__c testLoan = new Loan__c(Name='123456789', Amount__c=2000, LoanId__c='loan-123update');
+    @isTest static void testUpdateLoanSuccess() {
+        // Ensure we're starting with default settings
+        LendingSystemMockHttpResponseGenerator.reset();
+        // Set up for a successful response
+        LendingSystemMockHttpResponseGenerator.shouldSucceed = true;
+        LendingSystemMockHttpResponseGenerator.operation = 'U'; // 'U' for Update
+    
+        // Set up test data - assume the loan already exists and has an external ID
+        Loan__c testLoan = new Loan__c(Name='123456789', Amount__c=1000, LoanId__c='loan-123456789');
         insert testLoan;
-
-        // Prepare mock callout response for successful update
+    
+        // Modify test data for update
+        testLoan.Amount__c = 1500; // Change the amount to simulate an update
+        update testLoan; // Important to update the record in Salesforce before calling the update method
+    
+        // Set up mock callout response
         Test.setMock(HttpCalloutMock.class, new LendingSystemMockHttpResponseGenerator());
-
-        // Modify the test data to trigger an update
-        testLoan.Amount__c = 3000;
-
+    
         // Start test context
         Test.startTest();
-        
-        // Update the record to fire the trigger and call the future method
-        update testLoan;
-        
+    
+        // Call the method to test
+        Set<Id> loanIds = new Set<Id>{testLoan.Id};
+        LendingSystemIntegration.updateLoan(loanIds);
+    
         // Stop test context
         Test.stopTest();
-
-        // Assertions are limited for @future methods, but we can check if there were no errors.
+    
+        // Verify the results - expecting the external ID to remain the same but verifying update was "successful"
+        testLoan = [SELECT LoanId__c FROM Loan__c WHERE Id = :testLoan.Id];
+        System.assertEquals('loan-123456789', testLoan.LoanId__c, 'Loan should retain the same external ID after successful update');
     }
-
-    @isTest static void testUpdateLoanError() {
-        // Prepare the initial test data for a scenario that should fail
-        Loan__c testLoan = new Loan__c(Name='123456789', Amount__c=2000, LoanId__c=''); // Missing external Loan ID
+    
+    @isTest static void testUpdateLoanFailure() {
+        // Reset to default settings and configure for a failure scenario
+        LendingSystemMockHttpResponseGenerator.reset();
+        LendingSystemMockHttpResponseGenerator.shouldSucceed = false; // Simulate failure
+        LendingSystemMockHttpResponseGenerator.operation = 'U'; // 'U' for Update
+        LendingSystemMockHttpResponseGenerator.statusCodeOverride = 404; // Error status code for update failure
+    
+        // Set up test data - assume the loan already exists and has an external ID
+        Loan__c testLoan = new Loan__c(Name='987654321', Amount__c=1500, LoanId__c='loan-123456789');
         insert testLoan;
-
-        // Prepare mock callout response for failed update
+    
+        // Modify test data for update
+        testLoan.Amount__c = 2000; // Change the amount to simulate an update
+        update testLoan; // Important to update the record in Salesforce before calling the update method
+    
+        // Set up mock callout response
         Test.setMock(HttpCalloutMock.class, new LendingSystemMockHttpResponseGenerator());
-
-        // Attempt to update the loan
-        testLoan.Amount__c = 3000;
-
+    
         // Start test context
         Test.startTest();
-        
-        // Update the record to try and trigger the future method
-        update testLoan;
-        
+    
+        // Attempt to update the loan, which should fail in this case
+        Set<Id> loanIds = new Set<Id>{testLoan.Id};
+        LendingSystemIntegration.updateLoan(loanIds);
+    
         // Stop test context
         Test.stopTest();
-
-        // Check for lack of updates due to errors or missing information.
+    
+        // Verify the results - expecting no changes in external ID and update to be "failed"
+        testLoan = [SELECT LoanId__c FROM Loan__c WHERE Id = :testLoan.Id];
+        System.assertEquals('loan-123456789', testLoan.LoanId__c, 'Loan should retain its original external ID after failed update');
     }
 
-    @isTest static void testDeleteLoan() {
-        // Prepare the initial test data
-        Loan__c testLoan = new Loan__c(Name='123456789', Amount__c=2000, LoanId__c='loan-123delete');
+    @isTest static void testDeleteLoanSuccess() {
+        // Ensure we're starting with default settings
+        LendingSystemMockHttpResponseGenerator.reset();
+        // Set up for a successful response
+        LendingSystemMockHttpResponseGenerator.shouldSucceed = true;
+        LendingSystemMockHttpResponseGenerator.operation = 'D'; // 'D' for Delete
+        
+        // Set up test data - assume the loan already exists and has an external ID
+        Loan__c testLoan = new Loan__c(Name='123456789', Amount__c=1000, LoanId__c='loan-123456789');
         insert testLoan;
-
-        // Prepare mock callout response for successful deletion
+    
+        // Prepare loan ID for deletion
+        Set<String> loanIdsForDeletion = new Set<String>{testLoan.LoanId__c};
+    
+        // Set up mock callout response
         Test.setMock(HttpCalloutMock.class, new LendingSystemMockHttpResponseGenerator());
-
+    
         // Start test context
         Test.startTest();
-        
-        // Delete the record to fire the trigger and call the future method
-        delete testLoan;
-        
+    
+        // Call the method to test
+        LendingSystemIntegration.deleteLoan(loanIdsForDeletion);
+    
         // Stop test context
         Test.stopTest();
-
-        // Assertions are limited, but check for successful mock response handling.
+    
+        // Verify the results - expecting the Loan__c record to be unchanged in Salesforce since it's a mock callout
+        Loan__c deletedLoan = [SELECT LoanId__c FROM Loan__c WHERE Id = :testLoan.Id];
+        System.assertEquals('loan-123456789', deletedLoan.LoanId__c, 'Loan should retain its external ID after successful mock delete');
     }
-
-    @isTest static void testDeleteLoanError() {
-        // Prepare data for a scenario expected to fail the delete operation
-        Loan__c testLoan = new Loan__c(Name='123456789', Amount__c=2000, LoanId__c=''); // Missing external Loan ID
+    
+    @isTest static void testDeleteLoanFailure() {
+        // Reset to default settings and configure for a failure scenario
+        LendingSystemMockHttpResponseGenerator.reset();
+        LendingSystemMockHttpResponseGenerator.shouldSucceed = false; // Simulate failure
+        LendingSystemMockHttpResponseGenerator.operation = 'D'; // 'D' for Delete
+        LendingSystemMockHttpResponseGenerator.statusCodeOverride = 404; // Error status code for delete failure
+        
+        // Set up test data - assume the loan already exists and has an external ID
+        Loan__c testLoan = new Loan__c(Name='987654321', Amount__c=1000, LoanId__c='loan-987654321');
         insert testLoan;
-
-        // Prepare mock callout response indicating failure
+    
+        // Prepare loan ID for deletion
+        Set<String> loanIdsForDeletion = new Set<String>{testLoan.LoanId__c};
+    
+        // Set up mock callout response
         Test.setMock(HttpCalloutMock.class, new LendingSystemMockHttpResponseGenerator());
-
+    
         // Start test context
         Test.startTest();
-        
-        // Attempt to delete the loan
-        delete testLoan;
-        
+    
+        // Attempt to delete the loan, which should fail in this case
+        LendingSystemIntegration.deleteLoan(loanIdsForDeletion);
+    
         // Stop test context
         Test.stopTest();
-
-        // Since there's no external Loan ID, deletion shouldn't proceed in the external system.
+    
+        // Verify the results - expecting the Loan__c record to be unchanged in Salesforce since it's a mock callout
+        Loan__c failedDeletedLoan = [SELECT LoanId__c FROM Loan__c WHERE Id = :testLoan.Id];
+        System.assertEquals('loan-987654321', failedDeletedLoan.LoanId__c, 'Loan should retain its external ID after failed mock delete');
     }
-
-    // Include the LendingSystemMockHttpResponseGenerator class here or as a separate file based on your organization's preference.
+    
 }

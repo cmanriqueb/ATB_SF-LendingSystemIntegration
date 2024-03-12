@@ -80,7 +80,7 @@ The backend system provides the following API endpoint:
  - Update Loan: PUT /loan.php
  - Delete Loan: DELETE /loan.php
 
-Each endpoint expects a JSON payload with the necessary information to process the loan operation. Please refer to the specific PHP file for details on the expected payload structure.
+Each endpoint expects a JSON payload with the necessary information to process the loan operation.
 
 ### Configuration
 

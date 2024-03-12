@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>LoanName_Digits_Only</fullName>
+    <active>true</active>
+    <description>The Loan Name must only contain numbers and no spaces or special characters.</description>
+    <errorConditionFormula>NOT(REGEX(Name, &apos;^\\d+$&apos;))</errorConditionFormula>
+    <errorMessage>The Loan Name must only contain numbers and no spaces or special characters.</errorMessage>
+</ValidationRule>

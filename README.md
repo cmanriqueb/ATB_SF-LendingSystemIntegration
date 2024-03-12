@@ -4,10 +4,16 @@ This project enables real-time synchronization between Salesforce and an externa
 
 ## Features
 
-- **Real-time Synchronization**: Ensures Salesforce records are automatically updated to reflect changes from the external lending system.
-- **Error Handling**: Implements robust error handling and logging for reliable data synchronization.
-- **Secure API Integration**: Utilizes Salesforce Named Credentials for secure communication with the external system.
-- **Comprehensive Testing**: Includes extensive Apex tests to ensure code reliability and maintain high coverage.
+- **Real-time Synchronization**: Ensures Salesforce records are automatically updated to reflect changes from the external lending system, maintaining up-to-date and accurate information across platforms.
+- **Robust Backend Integration**: Seamlessly synchronize Salesforce data with external systems while maintaining high data integrity and real-time tracking, ensuring that your Salesforce environment and the external backend system stay in perfect harmony.
+- **Comprehensive Logging Mechanism**: Utilizes the `BackendTransaction__c` custom object for detailed logging of all backend interactions, enabling strong management and visibility of backend events. This facilitates effective monitoring, troubleshooting, and auditability of integration flows.
+- **Error Handling**: Implements robust error handling and comprehensive logging for reliable data synchronization. Quickly identify and address issues with dynamic response tracking and clear reporting on the nature and outcome of each operation.
+- **Secure API Integration**: Leverages Salesforce Named Credentials for secure and streamlined communication with the external system, ensuring data privacy and integrity.
+- **Dynamic Error Handling and Reporting**: Enhances troubleshooting with detailed error messages and status codes, allowing for quick identification and resolution of integration issues.
+- **Transparent Operation Tracking**: Provides clear insights into the status of each operation performed between Salesforce and the external backend, enhancing operational awareness and control.
+- **Comprehensive Testing**: Includes extensive Apex tests covering a wide range of scenarios to ensure code reliability and maintain high coverage, bolstering the overall robustness of the integration.
+- **Scalable Architecture**: Designed to accommodate growing business needs and increasing volumes of backend interactions, ensuring that your integration solution remains reliable and efficient as your organization evolves.
+
 
 ## Prerequisites
 
@@ -74,7 +80,6 @@ The `BackendTransaction__c` custom object logs all interactions between Salesfor
   - `Failed`
 - **StatusCode__c**: A text field that stores the HTTP status code returned by the external system.
 - **Message__c**: A text area that captures any messages or descriptions returned by the external system or generated during the operation.
-- **Loan__c**: A lookup field to the `Loan__c` record. This association helps in tracking which loan record was involved in the transaction.
 - **Loan_Name__c**: A text field used to store the name of the loan. This ensures that the reference to the loan's name persists even if the `Loan__c` record is deleted.
 
 ### Usage
@@ -89,7 +94,6 @@ Upon the successful creation of a loan record in the external system, a `Backend
 - **Status__c**: `Succeeded`
 - **StatusCode__c**: `200`
 - **Message__c**: `Loan record created successfully in the external system.`
-- **Loan__c**: [Link to the associated Loan record]
 - **Loan_Name__c**: `Sample Loan Name`
 
 Conversely, if an update operation fails, the corresponding `BackendTransaction__c` record could be:
@@ -98,7 +102,6 @@ Conversely, if an update operation fails, the corresponding `BackendTransaction_
 - **Status__c**: `Failed`
 - **StatusCode__c**: `404`
 - **Message__c**: `Loan record not found in the external system.`
-- **Loan__c**: [Link to the associated Loan record]
 - **Loan_Name__c**: `Sample Loan Name`
 
 By maintaining these logs, Salesforce users can gain insights into the data flow between Salesforce and the external backend system and quickly address any issues.

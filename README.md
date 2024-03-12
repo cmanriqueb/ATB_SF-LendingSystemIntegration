@@ -75,10 +75,10 @@ To set up the database, run the `operations.sql` script in your MySQL environmen
 
 ### API Endpoints
 
-The backend system provides the following API endpoints:
- - Create Loan: POST /create_loan.php
- - Update Loan: PUT /update_loan.php
- - Delete Loan: DELETE /delete_loan.php
+The backend system provides the following API endpoint:
+ - Create Loan: POST /loan.php
+ - Update Loan: PUT /loan.php
+ - Delete Loan: DELETE /loan.php
 
 Each endpoint expects a JSON payload with the necessary information to process the loan operation. Please refer to the specific PHP file for details on the expected payload structure.
 

@@ -95,7 +95,6 @@ Upon the successful creation of a loan record in the external system, a `Backend
 - **Status__c**: `Succeeded`
 - **StatusCode__c**: `200`
 - **Message__c**: `Loan record created successfully in the external system.`
-- **Loan__c**: [Link to the associated Loan record]
 - **Loan_Name__c**: `Sample Loan Name`
 
 Conversely, if an update operation fails, the corresponding `BackendTransaction__c` record could be:
@@ -104,7 +103,6 @@ Conversely, if an update operation fails, the corresponding `BackendTransaction_
 - **Status__c**: `Failed`
 - **StatusCode__c**: `404`
 - **Message__c**: `Loan record not found in the external system.`
-- **Loan__c**: [Link to the associated Loan record]
 - **Loan_Name__c**: `Sample Loan Name`
 
 By maintaining these logs, Salesforce users can gain insights into the data flow between Salesforce and the external backend system and quickly address any issues.

@@ -4,10 +4,16 @@ This project enables real-time synchronization between Salesforce and an externa
 
 ## Features
 
-- **Real-time Synchronization**: Ensures Salesforce records are automatically updated to reflect changes from the external lending system.
-- **Error Handling**: Implements robust error handling and logging for reliable data synchronization.
-- **Secure API Integration**: Utilizes Salesforce Named Credentials for secure communication with the external system.
-- **Comprehensive Testing**: Includes extensive Apex tests to ensure code reliability and maintain high coverage.
+- **Real-time Synchronization**: Ensures Salesforce records are automatically updated to reflect changes from the external lending system, maintaining up-to-date and accurate information across platforms.
+- **Robust Backend Integration**: Seamlessly synchronize Salesforce data with external systems while maintaining high data integrity and real-time tracking, ensuring that your Salesforce environment and the external backend system stay in perfect harmony.
+- **Comprehensive Logging Mechanism**: Utilizes the `BackendTransaction__c` custom object for detailed logging of all backend interactions, enabling strong management and visibility of backend events. This facilitates effective monitoring, troubleshooting, and auditability of integration flows.
+- **Error Handling**: Implements robust error handling and comprehensive logging for reliable data synchronization. Quickly identify and address issues with dynamic response tracking and clear reporting on the nature and outcome of each operation.
+- **Secure API Integration**: Leverages Salesforce Named Credentials for secure and streamlined communication with the external system, ensuring data privacy and integrity.
+- **Dynamic Error Handling and Reporting**: Enhances troubleshooting with detailed error messages and status codes, allowing for quick identification and resolution of integration issues.
+- **Transparent Operation Tracking**: Provides clear insights into the status of each operation performed between Salesforce and the external backend, enhancing operational awareness and control.
+- **Comprehensive Testing**: Includes extensive Apex tests covering a wide range of scenarios to ensure code reliability and maintain high coverage, bolstering the overall robustness of the integration.
+- **Scalable Architecture**: Designed to accommodate growing business needs and increasing volumes of backend interactions, ensuring that your integration solution remains reliable and efficient as your organization evolves.
+
 
 ## Prerequisites
 

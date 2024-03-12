@@ -1,6 +1,6 @@
 <?php
 // Connect to the database
-$mysqli = new mysqli("localhost", "atbRoot", "M4g4ll4nes.24", "atb_sf");
+$mysqli = new mysqli("localhost", "db_username", "db_password", "db_name");
 
 // Check connection
 if ($mysqli->connect_error) {

@@ -80,7 +80,6 @@ The `BackendTransaction__c` custom object logs all interactions between Salesfor
   - `Failed`
 - **StatusCode__c**: A text field that stores the HTTP status code returned by the external system.
 - **Message__c**: A text area that captures any messages or descriptions returned by the external system or generated during the operation.
-- **Loan__c**: A lookup field to the `Loan__c` record. This association helps in tracking which loan record was involved in the transaction.
 - **Loan_Name__c**: A text field used to store the name of the loan. This ensures that the reference to the loan's name persists even if the `Loan__c` record is deleted.
 
 ### Usage
